@@ -1,0 +1,67 @@
+swagger: "2.0"
+info:
+  title: ""
+  version: ""
+basePath: /
+paths:
+  /v1//kv/{key}:
+    get:
+      summary: get key values
+      operationId: get key values
+      parameters:
+      - name: project
+        in: path
+        required: true
+        type: string
+      - name: key
+        in: path
+        required: true
+        type: string
+      - name: X-Domain-Name
+        in: header
+        type: string
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/*KVBody'
+      responses:
+        "200":
+          description: set key value success
+  /v1/kv/{key}:
+    put:
+      summary: create or update key value
+      operationId: create or update key value
+      parameters:
+      - name: key
+        in: path
+        required: true
+        type: string
+      - name: X-Domain-Name
+        in: header
+        description: pull kv from other tenant
+        type: string
+      - name: X-Realm
+        in: header
+        description: pull kv from heterogeneous config server
+        type: string
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/*KVBody'
+      responses:
+        "200":
+          description: set key value success
+definitions:
+  KVBody:
+    type: object
+    properties:
+      Labels:
+        type: object
+        additionalProperties:
+          type: string
+      Value:
+        type: string
+      ValueType:
+        type: string
