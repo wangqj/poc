@@ -2,6 +2,7 @@
 package resource
 
 import (
+	"encoding/json"
 	"github.com/apache/servicecomb-rokie/pkg/model"
 	goRestful "github.com/emicklei/go-restful"
 	"github.com/go-chassis/go-chassis/server/restful"
@@ -14,8 +15,9 @@ type KVResource struct {
 func (r *KVResource) Put(context *restful.Context) {
 	var err error
 	key := context.ReadPathParameter("key")
-	kv := &model.KV{}
-	if err = context.ReadEntity(kv); err != nil {
+	kv := new(model.KV)
+	decoder := json.NewDecoder(context.ReadRequest().Body)
+	if err = decoder.Decode(kv); err != nil {
 		WriteErrResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}

@@ -79,6 +79,10 @@ func TestMongodbService_CreateOrUpdate(t *testing.T) {
 		},
 	})
 	assert.NoError(t, err)
+	kvs, err := s.Find("default", model.WithKey("timeout"), model.WithLabels(map[string]string{
+		"app": "mall",
+	}), model.WithExactOne())
+	assert.Equal(t, "1s", kvs[0].Value)
 
 	t.Log("update app level config")
 	idAfter, err := s.CreateOrUpdate(&model.KV{
@@ -90,7 +94,22 @@ func TestMongodbService_CreateOrUpdate(t *testing.T) {
 		},
 	})
 	assert.NoError(t, err)
-	t.Log("update id ", idAfter)
+	t.Log("update id", idAfter)
 	assert.Equal(t, idBefore, idAfter)
+	kvs, err = s.Find("default", model.WithKey("timeout"), model.WithLabels(map[string]string{
+		"app": "mall",
+	}), model.WithExactOne())
+	assert.Equal(t, "3s", kvs[0].Value)
 
+}
+
+func TestLength(t *testing.T) {
+	s, err := model.NewMongoService(model.Options{
+		URI: "mongodb://127.0.0.1:27017",
+	})
+	kvs, err := s.Find("default", model.WithKey("timeout"), model.WithLabels(map[string]string{
+		"app": "mall",
+	}))
+	assert.NoError(t, err)
+	assert.Equal(t, 3, len(kvs))
 }

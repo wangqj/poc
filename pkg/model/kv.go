@@ -10,6 +10,8 @@ import (
 
 var ErrMissingDomain = errors.New("domain info missing, illegal access")
 var ErrNotExists = errors.New("key with labels does not exits")
+var ErrTooMany = errors.New("key with labels should be only one")
+var ErrKeyMustNotEmpty = errors.New("must supply key if you want to get exact one result")
 
 type KVService interface {
 	CreateOrUpdate(kv *KV) (string, error)
@@ -17,15 +19,10 @@ type KVService interface {
 	Exist(key, domain string, labels Labels) (string, error)
 	DeleteByID(id string) error
 	Delete(key, domain string, labels Labels) error
-	//Get(key string, labels Labels) ([]*KV, error)
+	Find(domain string, options ...CallOption) ([]*KV, error)
 	//SaveVersion(kv *KV) error
 	//GetVersionList(*KV) error
 	//RollBack(kv *KV, version string) error
-}
-
-type CallOptions struct {
-	DocID  string
-	Labels map[string]string
 }
 
 type Options struct {
