@@ -4,21 +4,21 @@ info:
   version: ""
 basePath: /
 paths:
-  /v1//kv/{key}:
+  /v1/kv/{key}:
     get:
       summary: get key values
       operationId: get key values
       parameters:
-      - name: project
-        in: path
-        required: true
-        type: string
       - name: key
         in: path
         required: true
         type: string
       - name: X-Domain-Name
         in: header
+        type: string
+      - name: X-Find
+        in: header
+        description: many or exactOne
         type: string
       - name: body
         in: body
@@ -27,8 +27,11 @@ paths:
           $ref: '#/definitions/*KVBody'
       responses:
         "200":
-          description: set key value success
-  /v1/kv/{key}:
+          description: get key value success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/KVBody'
     put:
       summary: create or update key value
       operationId: create or update key value
@@ -39,11 +42,11 @@ paths:
         type: string
       - name: X-Domain-Name
         in: header
-        description: pull kv from other tenant
+        description: set kv to other tenant
         type: string
       - name: X-Realm
         in: header
-        description: pull kv from heterogeneous config server
+        description: set kv to heterogeneous config server
         type: string
       - name: body
         in: body

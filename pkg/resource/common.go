@@ -6,11 +6,25 @@ import (
 	"github.com/apache/servicecomb-rokie/pkg/model"
 	"github.com/go-chassis/go-chassis/server/restful"
 	"github.com/go-mesh/openlogging"
-	"net/http"
 )
 
+const (
+	FindExactOne            = "exactOne"
+	FindMany                = "many"
+	MsgDomainMustNotBeEmpty = "domain must not be empty"
+	MsgIllegalFindPolicy    = "value of header X-Find can be many or exactOne"
+	MsgIllegalLabels        = "label's value can not be empty, " +
+		"label can not be duplicated, please check your query parameters"
+)
+
+func ReadDomain(context *restful.Context) interface{} {
+	return context.ReadRestfulRequest().Attribute("domain")
+}
+func ReadFindPolicy(context *restful.Context) string {
+	return context.ReadRestfulRequest().HeaderParameter("X-Find")
+}
 func WriteErrResponse(context *restful.Context, status int, msg string) {
-	context.WriteHeader(http.StatusInternalServerError)
+	context.WriteHeader(status)
 	b, _ := json.MarshalIndent(&ErrorMsg{Msg: msg}, "", " ")
 	context.Write(b)
 }
