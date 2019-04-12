@@ -9,10 +9,10 @@ import (
 )
 
 const (
-	FindExactOne            = "exactOne"
-	FindMany                = "many"
+	FindExact               = "exact"
+	FindMany                = "greedy"
 	MsgDomainMustNotBeEmpty = "domain must not be empty"
-	MsgIllegalFindPolicy    = "value of header X-Find can be many or exactOne"
+	MsgIllegalFindPolicy    = "value of header X-Find can be greedy or exact"
 	MsgIllegalLabels        = "label's value can not be empty, " +
 		"label can not be duplicated, please check your query parameters"
 )

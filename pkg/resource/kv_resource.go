@@ -75,9 +75,9 @@ func (r *KVResource) Find(context *restful.Context) {
 	switch policy {
 	case FindMany:
 		kvs, err = s.Find(domain.(string), model.WithKey(key), model.WithLabels(labels))
-	case FindExactOne:
+	case FindExact:
 		kvs, err = s.Find(domain.(string), model.WithKey(key), model.WithLabels(labels),
-			model.WithExactOne())
+			model.WithExactLabels())
 	default:
 		WriteErrResponse(context, http.StatusBadRequest, MsgIllegalFindPolicy)
 		return
@@ -113,10 +113,16 @@ func (r *KVResource) FindByLabels(context *restful.Context) {
 		WriteErrResponse(context, http.StatusInternalServerError, MsgDomainMustNotBeEmpty)
 		return
 	}
+	policy := ReadFindPolicy(context)
 	var kvs []*model.KV
-	kvs, err = s.Find(domain.(string), model.WithLabels(labels))
-	if err != nil {
-		WriteErrResponse(context, http.StatusInternalServerError, err.Error())
+	switch policy {
+	case FindMany:
+		kvs, err = s.Find(domain.(string), model.WithLabels(labels))
+	case FindExact:
+		kvs, err = s.Find(domain.(string), model.WithLabels(labels),
+			model.WithExactLabels())
+	default:
+		WriteErrResponse(context, http.StatusBadRequest, MsgIllegalFindPolicy)
 		return
 	}
 	err = context.WriteHeaderAndJSON(http.StatusOK, kvs, goRestful.MIME_JSON)
@@ -189,7 +195,7 @@ func (r *KVResource) URLPatterns() []restful.Route {
 					DataType:  "string",
 					Name:      "X-Find",
 					ParamType: goRestful.HeaderParameterKind,
-					Desc:      "many or exactOne",
+					Desc:      "greedy or exact",
 				},
 			},
 			Returns: []*restful.Returns{
@@ -206,12 +212,17 @@ func (r *KVResource) URLPatterns() []restful.Route {
 			Method:           http.MethodGet,
 			Path:             "/v1/kv",
 			ResourceFuncName: "FindByLabels",
-			FuncDesc:         "find key values by labels",
+			FuncDesc:         "find key values only by labels",
 			Parameters: []*restful.Parameters{
 				{
 					DataType:  "string",
 					Name:      "X-Domain-Name",
 					ParamType: goRestful.HeaderParameterKind,
+				}, {
+					DataType:  "string",
+					Name:      "X-Find",
+					ParamType: goRestful.HeaderParameterKind,
+					Desc:      "greedy or exact",
 				},
 			},
 			Returns: []*restful.Returns{

@@ -6,11 +6,15 @@ basePath: /
 paths:
   /v1/kv:
     get:
-      summary: find key values by labels
-      operationId: find key values by labels
+      summary: find key values only by labels
+      operationId: find key values only by labels
       parameters:
       - name: X-Domain-Name
         in: header
+        type: string
+      - name: X-Find
+        in: header
+        description: greedy or exact
         type: string
       responses:
         "200":
@@ -33,7 +37,7 @@ paths:
         type: string
       - name: X-Find
         in: header
-        description: many or exactOne
+        description: greedy or exact
         type: string
       - name: body
         in: body

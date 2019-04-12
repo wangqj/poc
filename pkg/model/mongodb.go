@@ -108,7 +108,7 @@ func (s *MongodbService) update(ctx context.Context, collection *mongo.Collectio
 
 }
 func (s *MongodbService) Exist(key, domain string, labels Labels) (string, error) {
-	kvs, err := s.Find(domain, WithExactOne(), WithLabels(labels), WithKey(key))
+	kvs, err := s.Find(domain, WithExactLabels(), WithLabels(labels), WithKey(key))
 	if err != nil {
 		return "", err
 	}
@@ -122,7 +122,7 @@ func (s *MongodbService) Exist(key, domain string, labels Labels) (string, error
 
 //Find get kvs by key, labels
 //because labels has a a lot of combination,
-//you can use WithExactOne to return only one kv which's labels exactly match the criteria
+//you can use WithExactLabels to return only one kv which's labels exactly match the criteria
 func (s *MongodbService) Find(domain string, options ...CallOption) ([]*KV, error) {
 	opts := CallOptions{}
 	for _, o := range options {
@@ -152,10 +152,7 @@ func (s *MongodbService) Find(domain string, options ...CallOption) ([]*KV, erro
 	if cur.Err() != nil {
 		return nil, err
 	}
-	if opts.ExactOne {
-		if opts.Key == "" {
-			return nil, ErrKeyMustNotEmpty
-		}
+	if opts.ExactLabels {
 		openlogging.Debug(fmt.Sprintf("find one [%s] with lables [%s] in [%s]", opts.Key, opts.Labels, domain))
 		curKV := &KV{} //reuse this pointer to reduce GC, only clear label
 		//check label length to get the exact match

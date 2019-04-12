@@ -1,17 +1,17 @@
 package model
 
 type CallOptions struct {
-	ExactOne bool
-	Key      string
-	Labels   Labels
+	ExactLabels bool
+	Key         string
+	Labels      Labels
 }
 
 type CallOption func(*CallOptions)
 
-//WithExactOne tell model service to return only one kv matches the labels
-func WithExactOne() CallOption {
+//WithExactLabels tell model service to return only one kv matches the labels
+func WithExactLabels() CallOption {
 	return func(o *CallOptions) {
-		o.ExactOne = true
+		o.ExactLabels = true
 	}
 }
 

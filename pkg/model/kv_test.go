@@ -84,7 +84,7 @@ var _ = Describe("Kv mongodb service", func() {
 			})
 			kvs1, err := s.Find("default", WithKey("timeout"), WithLabels(map[string]string{
 				"app": "mall",
-			}), WithExactOne())
+			}), WithExactLabels())
 			log.Println("============", kvs1[0].Value)
 			It("should be 1s", func() {
 				Expect(kvs1[0].Value).Should(Equal(beforeKV.Value))
@@ -108,15 +108,15 @@ var _ = Describe("Kv mongodb service", func() {
 			})
 			kvs, err := s.Find("default", WithKey("timeout"), WithLabels(map[string]string{
 				"app": "mall",
-			}), WithExactOne())
+			}), WithExactLabels())
 			It("should be 3s", func() {
 				Expect(kvs[0].Value).Should(Equal(afterKV.Value))
 			})
 		})
 	})
 
-	Describe("find kv timeout", func() {
-		Context("with labels app", func() {
+	Describe("greedy find by kv and labels", func() {
+		Context("with labels app ", func() {
 			kvs, err := s.Find("default", WithKey("timeout"), WithLabels(map[string]string{
 				"app": "mall",
 			}))
@@ -125,6 +125,49 @@ var _ = Describe("Kv mongodb service", func() {
 			})
 			It("should has 3 records", func() {
 				Expect(len(kvs)).Should(Equal(3))
+			})
+
+		})
+	})
+	Describe("exact find by kv and labels", func() {
+		Context("with labels app ", func() {
+			kvs, err := s.Find("default", WithKey("timeout"), WithLabels(map[string]string{
+				"app": "mall",
+			}), WithExactLabels())
+			It("should not return err", func() {
+				Expect(err).Should(BeNil())
+			})
+			It("should has 1 records", func() {
+				Expect(len(kvs)).Should(Equal(1))
+			})
+
+		})
+	})
+	Describe("exact find by labels", func() {
+		Context("with labels app ", func() {
+			kvs, err := s.Find("default", WithLabels(map[string]string{
+				"app": "mall",
+			}), WithExactLabels())
+			It("should not return err", func() {
+				Expect(err).Should(BeNil())
+			})
+			It("should has 1 records", func() {
+				Expect(len(kvs)).Should(Equal(1))
+			})
+
+		})
+	})
+	Describe("greedy find by labels", func() {
+		Context("with labels app ans service ", func() {
+			kvs, err := s.Find("default", WithLabels(map[string]string{
+				"app":     "mall",
+				"service": "cart",
+			}))
+			It("should not return err", func() {
+				Expect(err).Should(BeNil())
+			})
+			It("should has 2 records", func() {
+				Expect(len(kvs)).Should(Equal(2))
 			})
 
 		})
