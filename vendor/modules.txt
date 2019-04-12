@@ -25,6 +25,8 @@ github.com/go-chassis/go-archaius/sources/enviromentvariable-source
 github.com/go-chassis/go-archaius/sources/memory-source
 # github.com/go-chassis/go-chassis v1.4.0
 github.com/go-chassis/go-chassis
+github.com/go-chassis/go-chassis/core/handler
+github.com/go-chassis/go-chassis/core/invocation
 github.com/go-chassis/go-chassis/server/restful
 github.com/go-chassis/go-chassis/bootstrap
 github.com/go-chassis/go-chassis/client/rest
@@ -33,7 +35,6 @@ github.com/go-chassis/go-chassis/control
 github.com/go-chassis/go-chassis/control/archaius
 github.com/go-chassis/go-chassis/core/common
 github.com/go-chassis/go-chassis/core/config
-github.com/go-chassis/go-chassis/core/handler
 github.com/go-chassis/go-chassis/core/loadbalancer
 github.com/go-chassis/go-chassis/core/metadata
 github.com/go-chassis/go-chassis/core/registry
@@ -52,24 +53,23 @@ github.com/go-chassis/go-chassis/pkg/loadbalancing
 github.com/go-chassis/go-chassis/pkg/runtime
 github.com/go-chassis/go-chassis/security/plugins/aes
 github.com/go-chassis/go-chassis/security/plugins/plain
-github.com/go-chassis/go-chassis/core/config/schema
-github.com/go-chassis/go-chassis/core/invocation
-github.com/go-chassis/go-chassis/core/lager
-github.com/go-chassis/go-chassis/pkg/util/iputil
 github.com/go-chassis/go-chassis/core/client
-github.com/go-chassis/go-chassis/pkg/util/httputil
-github.com/go-chassis/go-chassis/core/endpoint-discovery
-github.com/go-chassis/go-chassis/core/tls
 github.com/go-chassis/go-chassis/core/config/model
-github.com/go-chassis/go-chassis/third_party/forked/afex/hystrix-go/hystrix
+github.com/go-chassis/go-chassis/core/fault
+github.com/go-chassis/go-chassis/core/lager
 github.com/go-chassis/go-chassis/core/qpslimiter
 github.com/go-chassis/go-chassis/pkg/backoff
-github.com/go-chassis/go-chassis/pkg/util/fileutil
-github.com/go-chassis/go-chassis/core/fault
 github.com/go-chassis/go-chassis/pkg/string
 github.com/go-chassis/go-chassis/pkg/util
 github.com/go-chassis/go-chassis/session
+github.com/go-chassis/go-chassis/third_party/forked/afex/hystrix-go/hystrix
 github.com/go-chassis/go-chassis/pkg/util/tags
+github.com/go-chassis/go-chassis/core/config/schema
+github.com/go-chassis/go-chassis/pkg/util/iputil
+github.com/go-chassis/go-chassis/pkg/util/httputil
+github.com/go-chassis/go-chassis/core/endpoint-discovery
+github.com/go-chassis/go-chassis/core/tls
+github.com/go-chassis/go-chassis/pkg/util/fileutil
 github.com/go-chassis/go-chassis/healthz/client
 github.com/go-chassis/go-chassis/third_party/forked/k8s.io/apimachinery/pkg/util/sets
 github.com/go-chassis/go-chassis/pkg/scclient
@@ -80,8 +80,8 @@ github.com/go-chassis/go-chassis/pkg/metrics
 github.com/go-chassis/go-chassis/third_party/forked/afex/hystrix-go/hystrix/metric_collector
 github.com/go-chassis/go-chassis/pkg/goplugin
 github.com/go-chassis/go-chassis/security
-github.com/go-chassis/go-chassis/security/common
 github.com/go-chassis/go-chassis/third_party/forked/afex/hystrix-go/hystrix/rolling
+github.com/go-chassis/go-chassis/security/common
 # github.com/go-chassis/go-chassis-config v0.6.0
 github.com/go-chassis/go-chassis-config/apollo
 github.com/go-chassis/go-chassis-config/configcenter
@@ -106,6 +106,12 @@ github.com/golang/snappy
 github.com/gorilla/websocket
 # github.com/hashicorp/go-version v1.0.0
 github.com/hashicorp/go-version
+# github.com/hpcloud/tail v1.0.0
+github.com/hpcloud/tail
+github.com/hpcloud/tail/ratelimiter
+github.com/hpcloud/tail/util
+github.com/hpcloud/tail/watch
+github.com/hpcloud/tail/winfile
 # github.com/json-iterator/go v1.1.5
 github.com/json-iterator/go
 # github.com/matttproud/golang_protobuf_extensions v1.0.1
@@ -114,6 +120,38 @@ github.com/matttproud/golang_protobuf_extensions/pbutil
 github.com/modern-go/concurrent
 # github.com/modern-go/reflect2 v1.0.1
 github.com/modern-go/reflect2
+# github.com/onsi/ginkgo v1.8.0
+github.com/onsi/ginkgo
+github.com/onsi/ginkgo/reporters
+github.com/onsi/ginkgo/config
+github.com/onsi/ginkgo/internal/codelocation
+github.com/onsi/ginkgo/internal/failer
+github.com/onsi/ginkgo/internal/remote
+github.com/onsi/ginkgo/internal/suite
+github.com/onsi/ginkgo/internal/testingtproxy
+github.com/onsi/ginkgo/internal/writer
+github.com/onsi/ginkgo/reporters/stenographer
+github.com/onsi/ginkgo/reporters/stenographer/support/go-colorable
+github.com/onsi/ginkgo/types
+github.com/onsi/ginkgo/internal/spec_iterator
+github.com/onsi/ginkgo/internal/containernode
+github.com/onsi/ginkgo/internal/leafnodes
+github.com/onsi/ginkgo/internal/spec
+github.com/onsi/ginkgo/internal/specrunner
+github.com/onsi/ginkgo/reporters/stenographer/support/go-isatty
+# github.com/onsi/gomega v1.5.0
+github.com/onsi/gomega
+github.com/onsi/gomega/internal/assertion
+github.com/onsi/gomega/internal/asyncassertion
+github.com/onsi/gomega/internal/testingtsupport
+github.com/onsi/gomega/matchers
+github.com/onsi/gomega/types
+github.com/onsi/gomega/internal/oraclematcher
+github.com/onsi/gomega/format
+github.com/onsi/gomega/matchers/support/goraph/bipartitegraph
+github.com/onsi/gomega/matchers/support/goraph/edge
+github.com/onsi/gomega/matchers/support/goraph/node
+github.com/onsi/gomega/matchers/support/goraph/util
 # github.com/opentracing/opentracing-go v1.0.2
 github.com/opentracing/opentracing-go
 github.com/opentracing/opentracing-go/ext
@@ -187,6 +225,9 @@ go.uber.org/ratelimit/internal/clock
 golang.org/x/crypto/pbkdf2
 # golang.org/x/net v0.0.0-20181114220301-adae6a3d119a
 golang.org/x/net/context
+golang.org/x/net/html/charset
+golang.org/x/net/html
+golang.org/x/net/html/atom
 # golang.org/x/sync v0.0.0-20181108010431-42b317875d0f
 golang.org/x/sync/semaphore
 # golang.org/x/sys v0.0.0-20181116152217-5ac8a444bdc5
@@ -194,5 +235,23 @@ golang.org/x/sys/unix
 # golang.org/x/text v0.3.0
 golang.org/x/text/unicode/norm
 golang.org/x/text/transform
+golang.org/x/text/encoding
+golang.org/x/text/encoding/charmap
+golang.org/x/text/encoding/htmlindex
+golang.org/x/text/encoding/internal/identifier
+golang.org/x/text/encoding/internal
+golang.org/x/text/encoding/japanese
+golang.org/x/text/encoding/korean
+golang.org/x/text/encoding/simplifiedchinese
+golang.org/x/text/encoding/traditionalchinese
+golang.org/x/text/encoding/unicode
+golang.org/x/text/language
+golang.org/x/text/internal/utf8internal
+golang.org/x/text/runes
+golang.org/x/text/internal/tag
+# gopkg.in/fsnotify.v1 v1.4.7
+gopkg.in/fsnotify.v1
+# gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7
+gopkg.in/tomb.v1
 # gopkg.in/yaml.v2 v2.2.1
 gopkg.in/yaml.v2

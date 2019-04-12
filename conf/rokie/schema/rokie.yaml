@@ -4,10 +4,25 @@ info:
   version: ""
 basePath: /
 paths:
+  /v1/kv:
+    get:
+      summary: find key values by labels
+      operationId: find key values by labels
+      parameters:
+      - name: X-Domain-Name
+        in: header
+        type: string
+      responses:
+        "200":
+          description: get key value success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/KVBody'
   /v1/kv/{key}:
     get:
-      summary: get key values
-      operationId: get key values
+      summary: get key values by key and labels
+      operationId: get key values by key and labels
       parameters:
       - name: key
         in: path
@@ -55,7 +70,7 @@ paths:
           $ref: '#/definitions/*KVBody'
       responses:
         "200":
-          description: set key value success
+          description: "true"
 definitions:
   KVBody:
     type: object

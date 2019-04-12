@@ -21,7 +21,11 @@ func ReadDomain(context *restful.Context) interface{} {
 	return context.ReadRestfulRequest().Attribute("domain")
 }
 func ReadFindPolicy(context *restful.Context) string {
-	return context.ReadRestfulRequest().HeaderParameter("X-Find")
+	policy := context.ReadRestfulRequest().HeaderParameter("X-Find")
+	if policy == "" {
+		return FindMany
+	}
+	return policy
 }
 func WriteErrResponse(context *restful.Context, status int, msg string) {
 	context.WriteHeader(status)
@@ -30,7 +34,7 @@ func WriteErrResponse(context *restful.Context, status int, msg string) {
 }
 
 func ErrLog(action string, kv *model.KV, err error) {
-	openlogging.Error(fmt.Sprintf("[%s] [%s] err:%s", action, kv, err.Error()))
+	openlogging.Error(fmt.Sprintf("[%s] [%v] err:%s", action, kv, err.Error()))
 }
 
 func InfoLog(action string, kv *model.KV) {

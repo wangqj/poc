@@ -33,7 +33,7 @@ func (r *KVResource) Put(context *restful.Context) {
 		WriteErrResponse(context, http.StatusInternalServerError, err.Error())
 		return
 	}
-	_, err = s.CreateOrUpdate(kv)
+	kv, err = s.CreateOrUpdate(kv)
 	if err != nil {
 		ErrLog("put", kv, err)
 		WriteErrResponse(context, http.StatusInternalServerError, err.Error())
@@ -41,7 +41,7 @@ func (r *KVResource) Put(context *restful.Context) {
 	}
 	InfoLog("put", kv)
 	context.WriteHeader(http.StatusOK)
-	context.Write([]byte(`true`))
+	context.WriteHeaderAndJSON(http.StatusOK, kv, goRestful.MIME_JSON)
 
 }
 func (r *KVResource) Find(context *restful.Context) {
@@ -92,6 +92,39 @@ func (r *KVResource) Find(context *restful.Context) {
 	}
 
 }
+func (r *KVResource) FindByLabels(context *restful.Context) {
+	var err error
+	values := context.ReadRequest().URL.Query()
+	labels := make(map[string]string, len(values))
+	for k, v := range values {
+		if len(v) != 1 {
+			WriteErrResponse(context, http.StatusBadRequest, MsgIllegalLabels)
+			return
+		}
+		labels[k] = v[0]
+	}
+	s, err := model.NewKVService()
+	if err != nil {
+		WriteErrResponse(context, http.StatusInternalServerError, err.Error())
+		return
+	}
+	domain := ReadDomain(context)
+	if domain == nil {
+		WriteErrResponse(context, http.StatusInternalServerError, MsgDomainMustNotBeEmpty)
+		return
+	}
+	var kvs []*model.KV
+	kvs, err = s.Find(domain.(string), model.WithLabels(labels))
+	if err != nil {
+		WriteErrResponse(context, http.StatusInternalServerError, err.Error())
+		return
+	}
+	err = context.WriteHeaderAndJSON(http.StatusOK, kvs, goRestful.MIME_JSON)
+	if err != nil {
+		openlogging.Error(err.Error())
+	}
+
+}
 func (r *KVResource) Delete(context *restful.Context) {
 
 }
@@ -120,11 +153,19 @@ func (r *KVResource) URLPatterns() []restful.Route {
 					ParamType: goRestful.HeaderParameterKind,
 					Desc:      "set kv to heterogeneous config server",
 				},
+				//{
+				//	DataType:  "string",
+				//	Name:      "X-Set",
+				//	ParamType: goRestful.HeaderParameterKind,
+				//	Desc: "many or exactOne, " +
+				//		"if set to exact one, will only update one kv with exact match labels. " +
+				//		"if many, will update all kvs partial match labels ",
+				//},
 			},
 			Returns: []*restful.Returns{
 				{
 					Code:    http.StatusOK,
-					Message: "set key value success",
+					Message: "true",
 				},
 			},
 			Consumes: []string{"application/json"},
@@ -134,7 +175,7 @@ func (r *KVResource) URLPatterns() []restful.Route {
 			Method:           http.MethodGet,
 			Path:             "/v1/kv/{key}",
 			ResourceFuncName: "Find",
-			FuncDesc:         "get key values",
+			FuncDesc:         "get key values by key and labels",
 			Parameters: []*restful.Parameters{
 				{
 					DataType:  "string",
@@ -161,6 +202,27 @@ func (r *KVResource) URLPatterns() []restful.Route {
 			Consumes: []string{"application/json"},
 			Produces: []string{"application/json"},
 			Read:     &KVBody{},
+		}, {
+			Method:           http.MethodGet,
+			Path:             "/v1/kv",
+			ResourceFuncName: "FindByLabels",
+			FuncDesc:         "find key values by labels",
+			Parameters: []*restful.Parameters{
+				{
+					DataType:  "string",
+					Name:      "X-Domain-Name",
+					ParamType: goRestful.HeaderParameterKind,
+				},
+			},
+			Returns: []*restful.Returns{
+				{
+					Code:    http.StatusOK,
+					Message: "get key value success",
+					Model:   []*KVBody{},
+				},
+			},
+			Consumes: []string{"application/json"},
+			Produces: []string{"application/json"},
 		},
 	}
 }

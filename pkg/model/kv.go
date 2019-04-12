@@ -6,6 +6,7 @@ import (
 
 	"errors"
 	"github.com/apache/servicecomb-rokie/config"
+	"time"
 )
 
 var ErrMissingDomain = errors.New("domain info missing, illegal access")
@@ -14,14 +15,13 @@ var ErrTooMany = errors.New("key with labels should be only one")
 var ErrKeyMustNotEmpty = errors.New("must supply key if you want to get exact one result")
 
 type KVService interface {
-	CreateOrUpdate(kv *KV) (string, error)
+	CreateOrUpdate(kv *KV) (*KV, error)
 	//do not use primitive.ObjectID as return to decouple with mongodb, we can afford perf lost
 	Exist(key, domain string, labels Labels) (string, error)
 	DeleteByID(id string) error
 	Delete(key, domain string, labels Labels) error
 	Find(domain string, options ...CallOption) ([]*KV, error)
-	//SaveVersion(kv *KV) error
-	//GetVersionList(*KV) error
+	AddHistory(kv *KV) error
 	//RollBack(kv *KV, version string) error
 }
 
@@ -30,6 +30,7 @@ type Options struct {
 	PoolSize int
 	SSL      bool
 	TLS      *tls.Config
+	Timeout  time.Duration
 }
 
 func NewKVService() (KVService, error) {

@@ -30,4 +30,5 @@ db:
 	err = config.Init("test.yaml")
 	assert.NoError(t, err)
 	assert.Equal(t, 10, config.GetDB().PoolSize)
+	assert.Equal(t, "mongodb://admin:123@127.0.0.1:27017/rokie", config.GetDB().URI)
 }
